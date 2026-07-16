@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Green glass lens -->
+    <path
+        android:fillColor="#2FD98A"
+        android:pathData="M24,54 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0 Z" />
+
+    <!-- Pupil / aperture -->
+    <path
+        android:fillColor="#0B0F1A"
+        android:pathData="M42.5,54 a11.5,11.5 0 1,0 23,0 a11.5,11.5 0 1,0 -23,0 Z" />
+
+    <!-- Glass highlights -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44.3,39.2 a4.2,4.2 0 1,0 0,8.4 a4.2,4.2 0 1,0 0,-8.4 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51.4,48.4 a2.1,2.1 0 1,0 0,4.2 a2.1,2.1 0 1,0 0,-4.2 Z" />
+</vector>

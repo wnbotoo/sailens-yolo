@@ -1,0 +1,43 @@
+package com.sailens.presentation.di
+
+import com.sailens.presentation.diagnostics.GuidanceDiagnosticsStore
+import com.sailens.presentation.device.HapticManager
+import com.sailens.presentation.device.SpeechManager
+import com.sailens.presentation.scene.SceneAnalysisViewModel
+import com.sailens.presentation.settings.GuidanceSettingsStore
+import com.sailens.presentation.settings.PerceptionSettingsStore
+import com.sailens.presentation.settings.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+
+val presentationModule = module {
+    single { HapticManager(androidContext()) }
+    single { SpeechManager(androidContext(), get()) }
+    single { GuidanceSettingsStore(androidContext()) }
+    single { PerceptionSettingsStore(androidContext()) }
+    single { GuidanceDiagnosticsStore(sceneOverlayConfig = get(), uiFeatureFlags = get()) }
+    viewModel {
+        SceneAnalysisViewModel(
+            imageFrameProvider = get(),
+            startSceneAnalysisUseCase = get(),
+            stopSceneAnalysisUseCase = get(),
+            hapticManager = get(),
+            speechManager = get(),
+            logger = get(),
+            traceService = get(),
+            sceneOverlayConfig = get(),
+            guidanceSettingsStore = get(),
+            guidanceDiagnosticsStore = get(),
+        )
+    }
+    viewModel {
+        SettingsViewModel(
+            appInfo = get(),
+            guidanceSettingsStore = get(),
+            perceptionSettingsStore = get(),
+            perceptionProfileManager = get(),
+            guidanceDiagnosticsStore = get(),
+        )
+    }
+}
