@@ -1,2 +1,29 @@
 *.tflite filter=lfs diff=lfs merge=lfs -text
 * text=auto eol=lf
+
+# --- YOLO Edition: keep-ours merge rules -------------------------------------
+# These four files exist in upstream too, but this edition's versions are wholly
+# its own and upstream's content is never wanted here. Without this, every
+# `git merge upstream/main` that touches them is a manual conflict.
+#
+# Requires a one-time local setup (a driver cannot be committed):
+#
+#     git config merge.ours.driver true
+#
+# Without that config these lines are inert and you simply get the old manual
+# conflicts back — it fails safe, not silently wrong.
+#
+# TRADE-OFF: this DISCARDS upstream's changes to these paths, silently. That is
+# correct for them — this edition's README/LICENSE/NOTICE say different things by
+# design. But it does mean an upstream README improvement never reaches you. If
+# upstream restructures its README, port anything worth having by hand.
+#
+# Deliberately NOT listed: AGENTS.md, app/build.gradle.kts, strings.xml. This
+# edition modifies those too, but it *wants* upstream's changes to the rest of
+# each file, so they must merge normally. They are structured to merge cleanly:
+# AGENTS.md is a pure prefix over upstream's text, and the other two touch only
+# a couple of lines.
+README.md merge=ours
+README.zh-CN.md merge=ours
+LICENSE merge=ours
+NOTICE merge=ours

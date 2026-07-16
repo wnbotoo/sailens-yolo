@@ -48,12 +48,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // Distribution identity, surfaced on the Settings screen. Apache-2.0 requires recipients to
-        // get the license; an app is the one place users actually look, so it is shown in-product
-        // rather than only in the repo. A redistribution under different terms overrides these two
-        // and nothing else.
-        buildConfigField("String", "APP_LICENSE", "\"Apache-2.0\"")
-        buildConfigField("String", "APP_SOURCE_URL", "\"https://github.com/wnbotoo/sailens-android\"")
+        // YOLO Edition: this build bundles AGPL-3.0 weights, so the distributed work is AGPL-3.0
+        // and users must be pointed at THIS repository's corresponding source, not upstream's.
+        // These two lines are the whole of the edition's runtime identity delta — see
+        // docs/repository-license-strategy.md.
+        buildConfigField("String", "APP_LICENSE", "\"AGPL-3.0\"")
+        buildConfigField("String", "APP_SOURCE_URL", "\"https://github.com/wnbotoo/sailens-yolo\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

@@ -1,3 +1,47 @@
+<!--
+  YOLO EDITION PREFIX — everything below the marker is upstream's AGENTS.md, verbatim.
+  Keep it that way: edit upstream's text in upstream, never here, or every sync conflicts.
+  Corrections that apply to this edition go in this prefix block only.
+-->
+
+# AGENTS.md — Sailens YOLO Edition
+
+```text
+Repository: wnbotoo/sailens-yolo      Edition: YOLO Edition   License: AGPL-3.0
+Upstream:   wnbotoo/sailens-android   Edition: Core Edition   License: Apache-2.0
+```
+
+**Everything after the marker below is upstream's guide, synced unchanged. It is accurate for the
+code.** These rules are what differs here, and they override the upstream text where they disagree:
+
+- **Upstream's guide says "this repository is Apache-2.0" and "no model weights are committed
+  here". Both are true *of upstream*, not of this repository.** Here the license is AGPL-3.0, and
+  `data/src/main/assets/{sem,det}.tflite` are tracked deliberately via `git add -f` — the weights are
+  the entire point of this edition. Do not "fix" either by deleting weights or by proposing that
+  upstream commit them.
+- **Nearly everything belongs upstream.** Allowed direction is `sailens-android -> sailens-yolo`.
+  Do not start general features here: UI, camera, perception, scheduler, risk, fusion, events,
+  speech, model-runner abstraction, non-YOLO bug fixes. Make those in `sailens-android` first, then
+  sync. This edition's entire delta is two weights plus governance docs — zero code.
+- **`sailens-yolo -> sailens-android` is forbidden by default.** A third party's contribution here
+  is licensed to the maintainer under AGPL-3.0 and cannot be relicensed Apache-2.0. That rule is
+  load-bearing, not tidiness. (The copyright holder is not bound by their own outbound license —
+  see "Development workflow" in `docs/repository-license-strategy.md`.)
+- **Knowledge boundary:** upstream must not reference this repository, this edition, or any YOLO
+  Edition release path. Never open a PR against `sailens-android` that links here or adds build
+  logic aware of this repo. Upstream changes must make sense without knowing this repo exists.
+- **Every model change must update `docs/yolo-models.md`** with source, version, licenses, dataset
+  terms, and redistribution/commercial terms, and must keep `TfliteModelMetadataReaderTest` green —
+  that test is this edition's contract guard.
+- **Never rewrite published history, here or upstream.** This edition's ancestry is what makes
+  `git merge upstream/main` work. See "Syncing from upstream" in `README.md`.
+- Keep `LICENSE` (AGPL-3.0), `NOTICE`, `YOLO_EDITION_NOTICE.md`,
+  `docs/repository-license-strategy.md`, `CONTRIBUTING.md`, and `.github/pull_request_template.md`
+  aligned.
+
+---
+<!-- UPSTREAM AGENTS.md BEGINS HERE — DO NOT EDIT BELOW THIS LINE -->
+
 # AGENTS.md
 
 Sailens is Android navigation assistance for blind and low-vision users: a camera-fed perception
