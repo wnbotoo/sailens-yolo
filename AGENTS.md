@@ -27,6 +27,10 @@ code.** These rules are what differs here, and they override the upstream text w
   is licensed to the maintainer under AGPL-3.0 and cannot be relicensed Apache-2.0. That rule is
   load-bearing, not tidiness. (The copyright holder is not bound by their own outbound license —
   see "Development workflow" in `docs/repository-license-strategy.md`.)
+- **Never run `git push upstream`.** It would put this edition's AGPL history into the Apache-2.0
+  repository. A correctly set up clone has upstream's push URL disabled, but that is local config
+  and a fresh clone does not have it — check `git remote -v` before trusting it, and see
+  "One-time setup, per clone" in `README.md`.
 - **Knowledge boundary:** upstream must not reference this repository, this edition, or any YOLO
   Edition release path. Never open a PR against `sailens-android` that links here or adds build
   logic aware of this repo. Upstream changes must make sense without knowing this repo exists.

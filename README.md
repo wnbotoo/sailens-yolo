@@ -87,22 +87,54 @@ Same as upstream; the weights are already in place.
 
 ## Syncing from upstream
 
-One-time setup per clone (a merge driver cannot be committed, so `.gitattributes` alone is not
-enough):
+### One-time setup, per clone
+
+None of this can be committed — git config and merge drivers are local to a clone — so **every fresh
+clone needs all three lines**, or the guarantees below silently do not apply:
 
 ```bash
 git remote add upstream git@github.com:wnbotoo/sailens-android.git
-git config merge.ours.driver true
+git remote set-url --push upstream DISABLED    # AGPL must never be pushed to the Apache upstream
+git config merge.ours.driver true              # makes .gitattributes' merge=ours rules work
 ```
 
-Then every sync is:
+The second line matters more than it looks. Every governance document here says
+`sailens-yolo -> sailens-android` is forbidden, but that is paperwork: without this line, one
+`git push upstream main` puts this edition's AGPL history into the Apache-2.0 repository, and there
+is nothing else to stop it. `fetch` still works normally.
+
+Verify both took:
+
+```bash
+git remote -v                    # upstream's push URL must read DISABLED
+git config merge.ours.driver     # must print true
+```
+
+### Every sync
 
 ```bash
 git fetch upstream
-git merge upstream/main
+git merge upstream/main -m "sync: upstream $(git rev-parse --short upstream/main)"
+./gradlew build                  # see below — do not skip
+git push origin main
 ```
 
-Record the upstream commit SHA in the merge commit message; the PR checklist asks for it.
+The merge message records the upstream SHA, which the PR checklist asks for. (The merge commit's
+second parent *is* that SHA, but writing it down saves the next reader from digging.)
+
+**Do not skip the build.** `TfliteModelMetadataReaderTest` is the only thing that checks this
+edition's weights still satisfy the contract upstream's pipeline decodes against — and upstream
+cannot run it, because upstream has no weights. If upstream changed model loading or decoding, that
+test is the entire early-warning system.
+
+### Afterwards, confirm the ancestry is intact
+
+```bash
+git merge-base main upstream/main    # must be upstream's tip, NOT the initial commit
+```
+
+If that prints the initial commit, upstream's history was rewritten and this edition's base is
+orphaned — see the append-only section below before doing anything else.
 
 ### Why merge, not rebase
 

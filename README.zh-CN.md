@@ -85,21 +85,52 @@ Apache-2.0 Core  ->  AGPL-3.0 YOLO Edition
 
 ## 从上游同步
 
-每个 clone 一次性设置（merge driver 无法提交进仓库，所以光有 `.gitattributes` 不够）：
+### 每个 clone 一次性设置
+
+下面这些都提交不进仓库——git config 和 merge driver 是每个 clone 各自的——所以**每个新 clone 都要
+把三行都设一遍**，否则下面那些保证会静默失效：
 
 ```bash
 git remote add upstream git@github.com:wnbotoo/sailens-android.git
-git config merge.ours.driver true
+git remote set-url --push upstream DISABLED    # 绝不能把 AGPL 推进 Apache 上游
+git config merge.ours.driver true              # 让 .gitattributes 的 merge=ours 规则生效
 ```
 
-之后每次同步就是：
+**第二行比看起来重要。** 本仓库每一份治理文档都写着 `sailens-yolo -> sailens-android` 禁止，
+但那全是纸面约定：没有这一行，一句 `git push upstream main` 就能把本 Edition 的 AGPL 历史推进
+Apache-2.0 的仓库，而**没有任何别的东西拦得住**。`fetch` 不受影响。
+
+验证两条都生效了：
+
+```bash
+git remote -v                    # upstream 的 push URL 必须显示 DISABLED
+git config merge.ours.driver     # 必须输出 true
+```
+
+### 每次同步
 
 ```bash
 git fetch upstream
-git merge upstream/main
+git merge upstream/main -m "sync: upstream $(git rev-parse --short upstream/main)"
+./gradlew build                  # 见下——别跳过
+git push origin main
 ```
 
-在 merge commit 信息里记录上游的 commit SHA；PR checklist 会要。
+merge 信息里带上游 SHA，PR checklist 要这个。（merge commit 的第二个父提交**就是**那个 SHA，
+但写下来省得下一个人去挖。）
+
+**别跳过构建。** `TfliteModelMetadataReaderTest` 是唯一检查本 Edition 的权重是否仍满足上游管线
+解码契约的东西——**而上游跑不了它，因为上游没有权重**。上游一旦改动模型加载或解码路径，
+那个测试就是全部的早期警报。
+
+### 之后确认 ancestry 没歪
+
+```bash
+git merge-base main upstream/main    # 必须是上游的 tip，不能是初始提交
+```
+
+如果它输出的是初始提交，说明上游的历史被重写了、本 Edition 的 base 已成孤儿——
+先看下面的 append-only 那节，别做别的。
 
 ### 为什么用 merge 而不是 rebase
 
